@@ -31,6 +31,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         super.viewDidLoad()
         
+    
+        myTableView.allowsSelectionDuringEditing = true
+        
         //To add an edit button in Navigation bar
         
         navigationItem.rightBarButtonItem = editButtonItem
@@ -68,7 +71,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     
-    //Mark - Protocol function numberOfSection
+    //Mark: - Protocol function numberOfSection
     func numberOfSections(in tableView: UITableView) -> Int {
         
             print(allItem.count)
@@ -76,7 +79,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     }
 
-    //Mark - Protocol function numberOfRowsInSection
+    //Mark: - Protocol function numberOfRowsInSection
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         //return allItem[section].count
@@ -105,7 +108,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     //function for displaying cells in tableview
-    //Mark - Protocol function cellForRowAt
+    
+    //Mark: - Protocol function cellForRowAt
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
@@ -135,6 +139,20 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return cell
     }
     
+    //selecting rows
+    
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        
+        let sectionItems = allItem[indexPath.section]
+        if isEditing && indexPath.row < sectionItems.count {
+            
+            //print("This is  section no. \(indexPath.section)")
+            return nil
+        }
+        
+        return indexPath
+    }
+    
     //function to add delete or insert icons
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
@@ -153,7 +171,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
     }
     
-    //Function to enable editing
+    //Function to enable editing and adding items
     override func setEditing(_ editing: Bool, animated: Bool) {
       super.setEditing(editing, animated: animated)
         
@@ -200,6 +218,42 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             return .insert
         } else {
             return .delete
+        }
+    }
+    
+    /* *************************************************************************************************************************************** */
+    
+    //Mark - Enable movement of rows
+    
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        
+        let sectionItems = allItem[indexPath.section]
+        
+        if indexPath.row >= sectionItems.count && isEditing {
+            
+            return false
+            
+        }
+        
+        return true
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        
+        let itemToMove = allItem[sourceIndexPath.section][sourceIndexPath.row]
+        
+        allItem[sourceIndexPath.section].remove(at: sourceIndexPath.row)
+        
+        if sourceIndexPath.section == destinationIndexPath.section {
+            
+            allItem[sourceIndexPath.section].insert(itemToMove, at: destinationIndexPath.row)
+            
+            
+        }
+        else{
+            
+            allItem[destinationIndexPath.section].insert(itemToMove, at: destinationIndexPath.row)
+            
         }
     }
   
