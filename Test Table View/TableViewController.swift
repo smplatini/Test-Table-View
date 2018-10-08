@@ -79,7 +79,12 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //Mark - Protocol function numberOfRowsInSection
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return allItem[section].count
+        //return allItem[section].count
+        
+        //add one row if it is in editing mode
+        let addedRow = isEditing ? 1 : 0
+        return allItem[section].count + addedRow
+  
     }
     
     
@@ -104,6 +109,15 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        
+        //check if it is in editing mode
+        if indexPath.row >= allItem[indexPath.section].count && isEditing{
+            cell.textLabel?.text = "Add New Item"
+            cell.detailTextLabel?.text = nil
+            cell.imageView?.image = nil
+        }
+        else{
+        
         let item = allItem[indexPath.section][indexPath.row]
         cell.textLabel?.text = item.title
         cell.detailTextLabel?.text = item.subtitle
@@ -116,13 +130,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             
         }
         
-        
+        }
         
         return cell
     }
     
-    //function to delete rows in table
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    //function to add delete or insert icons
+    /*func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         if editingStyle == .delete {
             
@@ -130,25 +144,57 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
         
-    }
+    }*/
     
     //Function to enable editing
     override func setEditing(_ editing: Bool, animated: Bool) {
       super.setEditing(editing, animated: animated)
         
         if editing{
+            
+            myTableView.beginUpdates()
+            
+            for (index, sectionItems) in allItem.enumerated(){
+            
+                let indexPath = IndexPath(row: sectionItems.count, section: index)
+                myTableView.insertRows(at: [indexPath], with: .fade)
+                
+            }
+            
+            myTableView.endUpdates()
+            
             myTableView.setEditing(true, animated: true)
             
         }
         else{
+            
+           myTableView.beginUpdates()
+            
+            for (index, sectionItems) in allItem.enumerated(){
+                
+                let indexPath = IndexPath(row: sectionItems.count, section: index)
+                
+                myTableView.deleteRows(at: [indexPath], with: .fade)
+                
+            }
+            
+            myTableView.endUpdates()
             myTableView.setEditing(false, animated: true)
             
         }
         
         
     }
-    
-    
-
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
+        
+        let sectionItems = allItem[indexPath.section]
+        
+        if indexPath.row == sectionItems.count {
+            return .insert
+        } else {
+            return .delete
+        }
+    }
+  
 }
 
