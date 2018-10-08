@@ -74,7 +74,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //Mark: - Protocol function numberOfSection
     func numberOfSections(in tableView: UITableView) -> Int {
         
-            print(allItem.count)
+           // print(allItem.count)
         return allItem.count
     
     }
@@ -156,6 +156,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     //function to add delete or insert icons
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
+        var itemName = UITextField()
+        var itemDescription = UITextField()
+        
         if editingStyle == .delete {
             
             allItem[indexPath.section].remove(at: indexPath.row)
@@ -163,13 +166,69 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
         else if editingStyle == .insert {
             
-            let newData = DataItem(title: "New Data", subtitle: "", imageName: nil)
-            allItem[indexPath.section].append(newData)
-            myTableView.insertRows(at: [indexPath], with: .fade)
+          /* Added code here */
+            
+            let alert = UIAlertController(title: "Add a new Item ", message: "", preferredStyle: .alert)
+            
+            
+            //UI alert action closure
+            /* ***** what will happen once the user clicks the Add Item button on our UIAlert *********  */
+            let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
+                
+                if let title = itemName.text{
+                    
+                    if let subtitle = itemDescription.text {
+                        
+                        let newItem = DataItem(title: title, subtitle: subtitle, imageName: nil)
+                    
+                             self.allItem[indexPath.section].append(newItem)
+                            self.myTableView.insertRows(at: [indexPath], with: .fade)
+                    }
+                    
+                }
+               
+               
+                
+                
+            }
+            
+            //Adding text field to alert UI
+            alert.addTextField { (alertTextField) in
+                
+                alertTextField.placeholder = "Create new item"
+               //Create a pointer to alertTextField
+                itemName = alertTextField
+                
+               
+                }
+            
+            alert.addTextField { (alertTextField) in
+                
+                alertTextField.placeholder = "Add Description"
+                itemDescription = alertTextField
+                
+            }
+            
+            //Present alert
+            alert.addAction(action)
+            
+            present(alert, animated : true, completion: nil)
+                
+            }
+            
+        
+            
+            
+          /*  code ends here*/
+            
+            
+            //let newData = DataItem(title: "New Data", subtitle: "", imageName: nil)
+           // allItem[indexPath.section].append(newData)
+           // myTableView.insertRows(at: [indexPath], with: .fade)
             
         }
         
-    }
+    
     
     //Function to enable editing and adding items
     override func setEditing(_ editing: Bool, animated: Bool) {
