@@ -257,5 +257,24 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
   
+    // Make sure the item is added within the array and not outside the Array
+
+    func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
+        
+        let sectionItems = allItem[proposedDestinationIndexPath.section]
+        
+        if proposedDestinationIndexPath.row >= sectionItems.count {
+            
+            return IndexPath(row: sectionItems.count - 1, section: proposedDestinationIndexPath.section)
+            
+        }
+        
+        return proposedDestinationIndexPath
+        
+    }
+    
+    
 }
+
+
 
