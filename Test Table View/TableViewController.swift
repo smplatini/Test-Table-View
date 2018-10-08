@@ -136,15 +136,22 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     }
     
     //function to add delete or insert icons
-    /*func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
         if editingStyle == .delete {
             
             allItem[indexPath.section].remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
+        else if editingStyle == .insert {
+            
+            let newData = DataItem(title: "New Data", subtitle: "", imageName: nil)
+            allItem[indexPath.section].append(newData)
+            myTableView.insertRows(at: [indexPath], with: .fade)
+            
+        }
         
-    }*/
+    }
     
     //Function to enable editing
     override func setEditing(_ editing: Bool, animated: Bool) {
