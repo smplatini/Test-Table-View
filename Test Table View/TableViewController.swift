@@ -31,6 +31,11 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
         super.viewDidLoad()
         
+        //To add an edit button in Navigation bar
+        
+        navigationItem.rightBarButtonItem = editButtonItem
+        
+        //storing data into array
         for (key,value) in amphibians {
           
             let newItem = DataItem(title: key, subtitle: value, imageName: key)
@@ -62,6 +67,8 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         
     }
     
+    
+    //Mark - Protocol function numberOfSection
     func numberOfSections(in tableView: UITableView) -> Int {
         
             print(allItem.count)
@@ -69,14 +76,14 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     }
 
-
+    //Mark - Protocol function numberOfRowsInSection
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return allItem[section].count
     }
     
-    //Function used for creating sections
     
+    //Function used for creating sections with titles
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         //return "Section #\(section)"
         
@@ -91,7 +98,9 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         }
     }
     
+    
     //function for displaying cells in tableview
+    //Mark - Protocol function cellForRowAt
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
@@ -112,7 +121,32 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         return cell
     }
     
+    //function to delete rows in table
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        
+        if editingStyle == .delete {
+            
+            allItem[indexPath.section].remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .fade)
+        }
+        
+    }
     
+    //Function to enable editing
+    override func setEditing(_ editing: Bool, animated: Bool) {
+      super.setEditing(editing, animated: animated)
+        
+        if editing{
+            myTableView.setEditing(true, animated: true)
+            
+        }
+        else{
+            myTableView.setEditing(false, animated: true)
+            
+        }
+        
+        
+    }
     
     
 
